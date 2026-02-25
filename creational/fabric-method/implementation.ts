@@ -1,50 +1,58 @@
+//#region Abstract
+interface Product {
+  getDescription(): string;
+}
+
 abstract class Creator {
   public abstract factoryMethod(): Product;
 
-  public someOperation(): string {
+  public orderPizza(): string {
     const product = this.factoryMethod();
-    return `Creator: The same creator's code has just worked with ${product.operation()}`;
+    return `Creator: The pizzeria just prepared ${product.getDescription()}`;
   }
 }
+//#endregion
 
-class ConcreteCreator1 extends Creator {
+//#region MargheritaPizzeria Creator and its product
+class MargheritaPizzeria extends Creator {
   public factoryMethod(): Product {
-    return new ConcreteProduct1();
+    return new MargheritaPizza();
   }
 }
 
-class ConcreteCreator2 extends Creator {
+class MargheritaPizza implements Product {
+  public getDescription(): string {
+    return "a Margherita Pizza with tomato, mozzarella, and basil 🍕";
+  }
+}
+//#endregion
+
+//#region PepperoniPizzeria Creator and its product
+class PepperoniPizzeria extends Creator {
   public factoryMethod(): Product {
-    return new ConcreteProduct2();
+    return new PepperoniPizza();
   }
 }
 
-interface Product {
-  operation(): string;
-}
-
-class ConcreteProduct1 implements Product {
-  public operation(): string {
-    return "{Result of the ConcreteProduct1}";
+class PepperoniPizza implements Product {
+  public getDescription(): string {
+    return "a Pepperoni Pizza with mozzarella and spicy pepperoni 🍕";
   }
 }
+//#endregion
 
-class ConcreteProduct2 implements Product {
-  public operation(): string {
-    return "{Result of the ConcreteProduct2}";
-  }
-}
-
+//#region Client code
 function clientCode(creator: Creator) {
-  console.log(
-    "Client: I'm not aware of the creator's class, but it still works.",
-  );
-  console.log(creator.someOperation());
+  console.log("Client: I don't know the pizzeria type, but it still works.");
+  console.log(creator.orderPizza());
 }
+//#endregion
 
-console.log("App: Launched with the ConcreteCreator1.");
-clientCode(new ConcreteCreator1());
+//#region Execution
+console.log("App: Launched with the MargheritaPizzeria.");
+clientCode(new MargheritaPizzeria());
 console.log("");
 
-console.log("App: Launched with the ConcreteCreator2.");
-clientCode(new ConcreteCreator2());
+console.log("App: Launched with the PepperoniPizzeria.");
+clientCode(new PepperoniPizzeria());
+//#endregion
