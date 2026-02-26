@@ -88,6 +88,6 @@ clientCode(new ModernFurnitureFactory());
 
 console.log("");
 
-// console.log("Client: Using classic furniture factory...");
-// clientCode(new ClassicFurnitureFactory());
+console.log("Client: Using classic furniture factory...");
+clientCode(new ClassicFurnitureFactory());
 //#endregion
