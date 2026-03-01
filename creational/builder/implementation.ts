@@ -1,11 +1,9 @@
-// Интерфейс строителя
 interface ComputerBuilder {
   addCPU(): void;
   addRAM(): void;
   addStorage(): void;
 }
 
-// Продукт — компьютер
 class Computer {
   public components: string[] = [];
 
@@ -14,7 +12,7 @@ class Computer {
   }
 }
 
-// Конкретный строитель
+
 class GamingComputerBuilder implements ComputerBuilder {
   private computer!: Computer;
 
@@ -45,7 +43,6 @@ class GamingComputerBuilder implements ComputerBuilder {
   }
 }
 
-// Директор — управляет процессом сборки
 class ComputerAssemblyDirector {
   private builder!: ComputerBuilder;
 
@@ -64,7 +61,6 @@ class ComputerAssemblyDirector {
   }
 }
 
-// Клиентский код
 function clientCode(director: ComputerAssemblyDirector) {
   const builder = new GamingComputerBuilder();
   director.setBuilder(builder);
