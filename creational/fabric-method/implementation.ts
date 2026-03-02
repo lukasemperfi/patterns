@@ -1,58 +1,86 @@
-//#region Abstract
+//#region Abstract Product and Creator
 interface Product {
-  getDescription(): string;
+  render(): string; // Method to return product details as an HTML string
 }
 
-abstract class Creator {
-  public abstract factoryMethod(): Product;
+abstract class ProductFactory {
+  public abstract createProduct(): Product;
 
-  public orderPizza(): string {
-    const product = this.factoryMethod();
-    return `Creator: The pizzeria just prepared ${product.getDescription()}`;
+  public getProductHtml(): string {
+    const product = this.createProduct();
+    return `<div>${product.render()}</div>`;
   }
 }
 //#endregion
 
-//#region MargheritaPizzeria Creator and its product
-class MargheritaPizzeria extends Creator {
-  public factoryMethod(): Product {
-    return new MargheritaPizza();
+//#region Concrete Products
+class LaptopProduct implements Product {
+  public render(): string {
+    return `
+      <h2>Laptop</h2>
+      <p>Powerful laptop for all your needs.</p>
+      <button>Add Laptop to Cart</button>
+    `;
   }
 }
 
-class MargheritaPizza implements Product {
-  public getDescription(): string {
-    return "a Margherita Pizza with tomato, mozzarella, and basil 🍕";
+class SmartphoneProduct implements Product {
+  public render(): string {
+    return `
+      <h2>Smartphone</h2>
+      <p>Latest model smartphone with amazing features.</p>
+      <button>Add Smartphone to Cart</button>
+    `;
+  }
+}
+
+class HeadphoneProduct implements Product {
+  public render(): string {
+    return `
+      <h2>Headphones</h2>
+      <p>High-quality headphones for immersive audio.</p>
+      <button>Add Headphones to Cart</button>
+    `;
   }
 }
 //#endregion
 
-//#region PepperoniPizzeria Creator and its product
-class PepperoniPizzeria extends Creator {
-  public factoryMethod(): Product {
-    return new PepperoniPizza();
+//#region Concrete Product Factories
+class LaptopFactory extends ProductFactory {
+  public createProduct(): Product {
+    return new LaptopProduct();
   }
 }
 
-class PepperoniPizza implements Product {
-  public getDescription(): string {
-    return "a Pepperoni Pizza with mozzarella and spicy pepperoni 🍕";
+class SmartphoneFactory extends ProductFactory {
+  public createProduct(): Product {
+    return new SmartphoneProduct();
+  }
+}
+
+class HeadphoneFactory extends ProductFactory {
+  public createProduct(): Product {
+    return new HeadphoneProduct();
   }
 }
 //#endregion
 
-//#region Client code
-function clientCode(creator: Creator) {
-  console.log("Client: I don't know the pizzeria type, but it still works.");
-  console.log(creator.orderPizza());
+//#region Client Code (Console Output)
+
+function displayProductsInConsole(
+  factory: ProductFactory,
+  sectionName: string,
+) {
+  console.log(`--- ${sectionName} ---`);
+  console.log(factory.getProductHtml());
+  console.log("\n");
 }
-//#endregion
 
-//#region Execution
-console.log("App: Launched with the MargheritaPizzeria.");
-clientCode(new MargheritaPizzeria());
-console.log("");
+// Simulate displaying products in different sections (console output)
+console.log("App: Displaying products in the console.");
 
-console.log("App: Launched with the PepperoniPizzeria.");
-clientCode(new PepperoniPizzeria());
+displayProductsInConsole(new LaptopFactory(), "Featured Products");
+displayProductsInConsole(new SmartphoneFactory(), "New Arrivals");
+displayProductsInConsole(new HeadphoneFactory(), "Accessories");
+
 //#endregion
