@@ -1,27 +1,44 @@
-class Singleton {
-  static #instance: Singleton;
+class SettingsManager {
+  static #instance: SettingsManager;
 
-  private constructor() {}
+  private settings = {
+    theme: "light",
+    language: "ru",
+  };
 
-  public static get instance(): Singleton {
-    if (!Singleton.#instance) {
-      Singleton.#instance = new Singleton();
-    }
-
-    return Singleton.#instance;
+  private constructor() {
+    console.log("SettingsManager: Инициализация настроек...");
   }
 
-  public someBusinessLogic() {}
+  public static get instance(): SettingsManager {
+    if (!SettingsManager.#instance) {
+      SettingsManager.#instance = new SettingsManager();
+    }
+    return SettingsManager.#instance;
+  }
+
+  public getTheme() {
+    return this.settings.theme;
+  }
+
+  public setTheme(theme: string) {
+    this.settings.theme = theme;
+  }
 }
 
 function clientCode() {
-  const s1 = Singleton.instance;
-  const s2 = Singleton.instance;
+  const appHeader = SettingsManager.instance;
+  appHeader.setTheme("dark");
 
-  if (s1 === s2) {
-    console.log("Singleton works, both variables contain the same instance.");
-  } else {
-    console.log("Singleton failed, variables contain different instances.");
+  const appFooter = SettingsManager.instance;
+
+  console.log(`Тема в хедере: ${appHeader.getTheme()}`);
+  console.log(`Тема в футере: ${appFooter.getTheme()}`);
+
+  if (appHeader === appFooter) {
+    console.log(
+      "Singleton работает: обе переменные ссылаются на один и тот же объект.",
+    );
   }
 }
 

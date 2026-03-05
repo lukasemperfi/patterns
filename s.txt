@@ -1,128 +1,46 @@
-//#region Abstract Products
-interface Laptop {
-  brand: string;
-  render(): string;
+interface Clonable {
+  clone(): this;
 }
 
-interface Smartphone {
-  brand: string;
-  render(): string;
-  syncWith(laptop: Laptop): string;
-}
+class Task implements Clonable {
+  public id: string;
+  public title: string;
+  public tags: string[];
+  public stats: { views: number; priority: string };
 
-interface Headphones {
-  brand: string;
-  render(): string;
-  pairWith(smartphone: Smartphone): string;
-}
-//#endregion
+  constructor(title: string, tags: string[]) {
+    this.id = Math.random().toString(36).substr(2, 9);
+    this.title = title;
+    this.tags = tags;
+    this.stats = { views: 0, priority: "normal" };
+  }
 
-//#region Abstract Factory
-interface TechFactory {
-  createLaptop(): Laptop;
-  createSmartphone(): Smartphone;
-  createHeadphones(): Headphones;
-}
-//#endregion
+  public clone(): this {
+    const clone = structuredClone(this);
 
-//#region Apple Brand Factory and its products
-class AppleFactory implements TechFactory {
-  public createLaptop = () => new MacBook();
-  public createSmartphone = () => new IPhone();
-  public createHeadphones = () => new AirPods();
-}
+    Object.setPrototypeOf(clone, Task.prototype);
 
-class MacBook implements Laptop {
-  brand = "Apple";
-  render = () => "MacBook Pro (M3 Chip)";
-}
+    clone.id = Math.random().toString(36).substr(2, 9);
+    clone.title = `Копия: ${this.title}`;
 
-class IPhone implements Smartphone {
-  brand = "Apple";
-  render = () => "iPhone 15 Pro";
-  syncWith(laptop: Laptop): string {
-    // Проверка совместимости
-    if (laptop.brand !== this.brand) {
-      return `[Incompatible] Cannot sync ${this.render()} with ${laptop.render()}. Ecosystem mismatch!`;
-    }
-    return `[AirDrop] Syncing with ${laptop.render()}`;
+    return clone;
+  }
+
+  public logInfo() {
+    console.log(
+      `Task [${this.id}]: ${this.title}. Tags: ${this.tags.join(", ")}`,
+    );
   }
 }
 
-class AirPods implements Headphones {
-  brand = "Apple";
-  render = () => "AirPods Pro 2";
-  pairWith(smartphone: Smartphone): string {
-    if (smartphone.brand !== this.brand) {
-      return `[Incompatible] ${this.render()} cannot pair with ${smartphone.render()}. Only Apple devices supported.`;
-    }
-    return `[H1 Chip] Instant pairing with ${smartphone.render()}. Battery 100%.`;
-  }
-}
-//#endregion
+const originalTask = new Task("Написать отчет", ["работа", "срочно"]);
+originalTask.stats.priority = "high";
 
-//#region Sony Brand Factory and its products
-class SonyFactory implements TechFactory {
-  public createLaptop = () => new VaioLaptop();
-  public createSmartphone = () => new XperiaPhone();
-  public createHeadphones = () => new SonyWH1000();
-}
+const duplicatedTask = originalTask.clone();
 
-class VaioLaptop implements Laptop {
-  brand = "Sony";
-  render = () => "Sony VAIO Z";
-}
+duplicatedTask.logInfo();
 
-class XperiaPhone implements Smartphone {
-  brand = "Sony";
-  render = () => "Sony Xperia 1 V";
-  syncWith(laptop: Laptop): string {
-    if (laptop.brand !== this.brand) {
-      return `[Incompatible] ${this.render()} cannot link to ${laptop.render()}. Requires Sony hardware.`;
-    }
-    return `[Cross-Device] Linking to ${laptop.render()}`;
-  }
-}
+duplicatedTask.tags.push("копия");
 
-class SonyWH1000 implements Headphones {
-  brand = "Sony";
-  render = () => "Sony WH-1000XM5";
-  pairWith(smartphone: Smartphone): string {
-    if (smartphone.brand !== this.brand) {
-      return `[Incompatible] ${this.render()} limited features with ${smartphone.render()}. No LDAC support.`;
-    }
-    return `[LDAC] High-res audio pairing with ${smartphone.render()}. Noise cancelling active.`;
-  }
-}
-//#endregion
-
-//#region Client Code
-function clientCode(factory: TechFactory) {
-  const laptop = factory.createLaptop();
-  const phone = factory.createSmartphone();
-  const audio = factory.createHeadphones();
-
-  console.log(`UI: ${laptop.render()}`);
-  console.log(`UI: ${phone.render()}`);
-  console.log(`UI: ${audio.render()}`);
-
-  console.log(`Sync: ${phone.syncWith(laptop)}`);
-  console.log(`Pair: ${audio.pairWith(phone)}`);
-}
-//#endregion
-
-//#region Execution
-console.log("--- Brand: APPLE ---");
-clientCode(new AppleFactory());
-
-console.log("\n--- Brand: SONY ---");
-clientCode(new SonyFactory());
-
-console.log("\n--- Manual Check: Incompatibility ---");
-const applePhone = new IPhone();
-const sonyLaptop = new VaioLaptop();
-const sonyAudio = new SonyWH1000();
-
-console.log(applePhone.syncWith(sonyLaptop));
-console.log(sonyAudio.pairWith(applePhone));
-//#endregion
+console.log("Оригинальные теги:", originalTask.tags);
+console.log("Теги дубликата:", duplicatedTask.tags);

@@ -1,71 +1,46 @@
-interface Shape {
-  clone(): Shape;
-  render(): void;
+interface Clonable {
+  clone(): this;
 }
 
-class Rectangle implements Shape {
-  public width: number;
-  public height: number;
-  public color: string;
+class Task implements Clonable {
+  public id: string;
+  public title: string;
+  public tags: string[];
+  public stats: { views: number; priority: string };
 
-  constructor(source?: Rectangle) {
-    if (source) {
-      this.width = source.width;
-      this.height = source.height;
-      this.color = source.color;
-    } else {
-      this.width = 0;
-      this.height = 0;
-      this.color = "black";
-    }
+  constructor(title: string, tags: string[]) {
+    this.id = Math.random().toString(36).substr(2, 9);
+    this.title = title;
+    this.tags = tags;
+    this.stats = { views: 0, priority: "normal" };
   }
 
-  public clone(): Shape {
-    return new Rectangle(this);
+  public clone(): this {
+    const clone = structuredClone(this);
+
+    Object.setPrototypeOf(clone, Task.prototype);
+
+    clone.id = Math.random().toString(36).substr(2, 9);
+    clone.title = `Копия: ${this.title}`;
+
+    return clone;
   }
 
-  public render(): void {
+  public logInfo() {
     console.log(
-      `Rectangle: ${this.width}x${this.height}, Color: ${this.color}`,
+      `Task [${this.id}]: ${this.title}. Tags: ${this.tags.join(", ")}`,
     );
   }
 }
 
-class Circle implements Shape {
-  public radius: number;
+const originalTask = new Task("Написать отчет", ["работа", "срочно"]);
+originalTask.stats.priority = "high";
 
-  constructor(source?: Circle) {
-    if (source) {
-      this.radius = source.radius;
-    } else {
-      this.radius = 0;
-    }
-  }
+const duplicatedTask = originalTask.clone();
 
-  public clone(): Shape {
-    return new Circle(this);
-  }
+duplicatedTask.logInfo();
 
-  public render(): void {
-    console.log(`Circle: radius ${this.radius}`);
-  }
-}
+duplicatedTask.tags.push("копия");
 
-function runGraphicEditor() {
-  const redRect = new Rectangle();
-  redRect.width = 100;
-  redRect.height = 50;
-  redRect.color = "red";
-
-  const anotherRect = redRect.clone();
-
-  console.log("Original:");
-  redRect.render();
-
-  console.log("Clone:");
-  anotherRect.render();
-
-  console.log("Are they the same object?", redRect === anotherRect);
-}
-
-runGraphicEditor();
+console.log("Оригинальные теги:", originalTask.tags);
+console.log("Теги дубликата:", duplicatedTask.tags);
