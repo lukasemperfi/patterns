@@ -46,8 +46,5 @@ classDiagram
     ProductFactory <|-- HeadphoneFactory : extends
 
     %% Зависимости
-    LaptopFactory ..> LaptopProduct : creates
-    SmartphoneFactory ..> SmartphoneProduct : creates
-    HeadphoneFactory ..> HeadphoneProduct : creates
     ProductFactory ..> Product : depends on
 ```
