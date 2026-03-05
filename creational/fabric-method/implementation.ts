@@ -1,15 +1,6 @@
-//#region Abstract Product and Creator
+//#region Abstract Product
 interface Product {
   render(): string;
-}
-
-abstract class ProductFactory {
-  public abstract createProduct(): Product;
-
-  public getProductHtml(): string {
-    const product = this.createProduct();
-    return `<div>${product.render()}</div>`;
-  }
 }
 //#endregion
 
@@ -41,6 +32,17 @@ class HeadphoneProduct implements Product {
       <p>High-quality headphones for immersive audio.</p>
       <button>Add Headphones to Cart</button>
     `;
+  }
+}
+//#endregion
+
+//#region Abstract Product Factory
+abstract class ProductFactory {
+  public abstract createProduct(): Product;
+
+  public getProductHtml(): string {
+    const product = this.createProduct();
+    return `<div>${product.render()}</div>`;
   }
 }
 //#endregion

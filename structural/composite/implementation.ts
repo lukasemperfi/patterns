@@ -22,8 +22,6 @@ class Product implements CartItem {
 }
 //#endregion
 
-//#region
-
 //#region Composite
 class GiftBox implements CartItem {
   private children: CartItem[] = [];
@@ -35,7 +33,6 @@ class GiftBox implements CartItem {
   }
 
   getPrice(): number {
-    // Суммируем цены всех вложенных элементов (рекурсивно)
     return this.children.reduce((total, item) => total + item.getPrice(), 0);
   }
 
