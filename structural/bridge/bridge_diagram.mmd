@@ -1,0 +1,37 @@
+```mermaid
+classDiagram
+    direction LR
+
+    %% Interfaces
+    class ThemeStyles {
+        <<interface>>
+        +titleStyle: string
+        +priceStyle: string
+        +containerStyle: string
+    }
+
+    %% Implementations (Themes)
+    class LightTheme
+    class DarkTheme
+
+    LightTheme ..|> ThemeStyles
+    DarkTheme ..|> ThemeStyles
+
+    %% Abstractions (Product Cards)
+    class ProductCard {
+        #styles: ThemeStyles
+        +render(name: string, price: number): string
+    }
+
+    class CompactProductCard {
+        +render(name: string, price: number): string
+    }
+
+    ProductCard o-- ThemeStyles : uses
+    CompactProductCard --|> ProductCard
+
+    %% Client
+    class Client
+    Client --> ProductCard
+    Client --> LightTheme
+    Client --> DarkTheme

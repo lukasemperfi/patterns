@@ -1,0 +1,34 @@
+```mermaid
+classDiagram
+    direction LR
+
+    %% Component Interface
+    class Drink {
+        <<interface>>
+        +getPrice(): number
+        +getDescription(): string
+    }
+
+    %% Concrete Component
+    class SimpleCoffee
+    Drink <|.. SimpleCoffee : implements
+
+    %% Base Decorator
+    abstract class DrinkDecorator {
+        #drink: Drink
+        +getPrice(): number
+        +getDescription(): string
+    }
+    Drink <|.. DrinkDecorator : implements
+    DrinkDecorator o-- Drink : wraps
+
+    %% Concrete Decorators
+    class MilkDecorator
+    class SyrupDecorator
+
+    DrinkDecorator <|-- MilkDecorator
+    DrinkDecorator <|-- SyrupDecorator
+
+    %% Client
+    class Client
+    Client --> Drink

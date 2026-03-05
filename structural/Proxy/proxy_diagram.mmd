@@ -1,0 +1,32 @@
+```mermaid
+classDiagram
+    direction LR
+
+    %% Subject Interface
+    class IProductDetail {
+        <<interface>>
+        +getDetails(): string
+    }
+
+    %% Real Subject
+    class RealProductDetail {
+        -productId: string
+        -loadFromDatabase()
+        +getDetails(): string
+    }
+
+    %% Proxy
+    class ProductDetailProxy {
+        -realProductDetail: RealProductDetail | null
+        -productId: string
+        +getDetails(): string
+    }
+
+    %% Relationships
+    IProductDetail <|.. RealProductDetail : implements
+    IProductDetail <|.. ProductDetailProxy : implements
+    ProductDetailProxy --> RealProductDetail : aggregates
+
+    %% Client
+    class Client
+    Client --> ProductDetailProxy : uses

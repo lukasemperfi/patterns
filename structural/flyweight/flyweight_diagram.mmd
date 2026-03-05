@@ -1,0 +1,20 @@
+```mermaid
+classDiagram
+    direction LR
+
+    class IconFlyweight {
+        -brandData: object
+        +renderOnMap(uniqueState: object): void
+    }
+
+    class IconFactory {
+        -flyweights: Map<string, IconFlyweight>
+        -getKey(brand: string, color: string): string
+        +getIcon(brand: string, logoUrl: string, color: string): IconFlyweight
+    }
+
+    IconFactory --> IconFlyweight : creates/manages
+
+    class Client
+    Client --> IconFactory
+    Client --> IconFlyweight

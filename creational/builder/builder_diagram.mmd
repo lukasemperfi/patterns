@@ -1,0 +1,44 @@
+```mermaid
+classDiagram
+    direction LR
+
+    %% Builder Interface
+    interface ComputerBuilder {
+        +addCPU(): void
+        +addRAM(): void
+        +addStorage(): void
+    }
+
+    %% Product
+    class Computer {
+        +components: string[]
+        +listComponents(): void
+    }
+
+    %% Concrete Builder
+    class GamingComputerBuilder {
+        -computer: Computer
+        +reset(): void
+        +addCPU(): void
+        +addRAM(): void
+        +addStorage(): void
+        +getComputer(): Computer
+    }
+
+    ComputerBuilder <|.. GamingComputerBuilder : implements
+    GamingComputerBuilder --> Computer : builds
+
+    %% Director
+    class ComputerAssemblyDirector {
+        -builder: ComputerBuilder
+        +setBuilder(builder: ComputerBuilder): void
+        +buildBasicComputer(): void
+        +buildFullGamingComputer(): void
+    }
+
+    ComputerAssemblyDirector o-- ComputerBuilder : directs
+
+    %% Client
+    class Client
+    Client --> ComputerAssemblyDirector
+    Client --> GamingComputerBuilder

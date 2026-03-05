@@ -1,0 +1,35 @@
+```mermaid
+classDiagram
+    direction LR
+
+    class OrderFacade {
+        -inventory: Inventory
+        -packing: Packing
+        -shipping: Shipping
+        -notification: Notification
+        +placeOrder(productId: string): void
+    }
+
+    class Inventory {
+        +checkStock(productId: string): boolean
+    }
+
+    class Packing {
+        +packProduct(productId: string): void
+    }
+
+    class Shipping {
+        +assignCourier(): void
+    }
+
+    class Notification {
+        +sendSMS(message: string): void
+    }
+
+    OrderFacade --> Inventory
+    OrderFacade --> Packing
+    OrderFacade --> Shipping
+    OrderFacade --> Notification
+
+    class Client
+    Client --> OrderFacade

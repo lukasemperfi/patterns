@@ -1,6 +1,6 @@
 //#region Abstract Product and Creator
 interface Product {
-  render(): string; // Method to return product details as an HTML string
+  render(): string;
 }
 
 abstract class ProductFactory {
@@ -65,8 +65,7 @@ class HeadphoneFactory extends ProductFactory {
 }
 //#endregion
 
-//#region Client Code (Console Output)
-
+//#region Client Code
 function displayProductsInConsole(
   factory: ProductFactory,
   sectionName: string,
@@ -76,7 +75,6 @@ function displayProductsInConsole(
   console.log("\n");
 }
 
-// Simulate displaying products in different sections (console output)
 console.log("App: Displaying products in the console.");
 
 displayProductsInConsole(new LaptopFactory(), "Featured Products");

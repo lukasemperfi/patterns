@@ -1,0 +1,76 @@
+```mermaid
+classDiagram
+    direction LR
+
+    %% Abstract Products
+    interface Laptop {
+        +brand: string
+        +render(): string
+    }
+
+    interface Smartphone {
+        +brand: string
+        +render(): string
+        +syncWith(laptop: Laptop): string
+    }
+
+    interface Headphones {
+        +brand: string
+        +render(): string
+        +pairWith(smartphone: Smartphone): string
+    }
+
+    %% Abstract Factory
+    interface TechFactory {
+        +createLaptop(): Laptop
+        +createSmartphone(): Smartphone
+        +createHeadphones(): Headphones
+    }
+
+    %% Concrete Factories
+    class AppleFactory {
+        +createLaptop(): Laptop
+        +createSmartphone(): Smartphone
+        +createHeadphones(): Headphones
+    }
+
+    class SonyFactory {
+        +createLaptop(): Laptop
+        +createSmartphone(): Smartphone
+        +createHeadphones(): Headphones
+    }
+
+    %% Concrete Products (Apple)
+    class MacBook
+    class IPhone
+    class AirPods
+
+    MacBook ..|> Laptop
+    IPhone ..|> Smartphone
+    AirPods ..|> Headphones
+
+    %% Concrete Products (Sony)
+    class VaioLaptop
+    class XperiaPhone
+    class SonyWH1000
+
+    VaioLaptop ..|> Laptop
+    XperiaPhone ..|> Smartphone
+    SonyWH1000 ..|> Headphones
+
+    %% Factory-Product Relationships
+    AppleFactory ..> MacBook : creates
+    AppleFactory ..> IPhone : creates
+    AppleFactory ..> AirPods : creates
+
+    SonyFactory ..> VaioLaptop : creates
+    SonyFactory ..> XperiaPhone : creates
+    SonyFactory ..> SonyWH1000 : creates
+
+    %% Product-Product Interactions
+    Smartphone ..> Laptop : syncsWith
+    Headphones ..> Smartphone : pairsWith
+
+    %% Client
+    class Client
+    Client --> TechFactory
