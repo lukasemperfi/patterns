@@ -5,7 +5,7 @@
     "strict": true,
     "esModuleInterop": true,
     "outDir": "dist",
-    "moduleDetection": "force",     
+    "moduleDetection": "force",
     "isolatedModules": true
   },
   "include": ["**/*.ts"]

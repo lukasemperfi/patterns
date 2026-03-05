@@ -10,6 +10,7 @@ abstract class BaseDataLoader {
     this.onComplete(); // Хук (необязательный)
   }
 
+  // Базовые операции
   protected showLoader(): void {
     console.log("Abstract: Showing global spinner...");
   }
@@ -22,9 +23,11 @@ abstract class BaseDataLoader {
     console.log("Abstract: Hiding spinner.");
   }
 
+  // Абстрактные(Обязательные) операции
   protected abstract fetchData(): Promise<void>;
   protected abstract render(): void;
 
+  // Хуки(Необязательные)
   protected onBeforeRender(): void {}
   protected onComplete(): void {}
 }
