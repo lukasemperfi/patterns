@@ -1,93 +1,128 @@
-//#region Abstract
-interface FurnitureFactory {
-  createChair(): Chair;
-  createTable(): Table;
+//#region Abstract Products
+interface Laptop {
+  brand: string;
+  render(): string;
 }
 
-interface Chair {
-  sitOn(): string;
+interface Smartphone {
+  brand: string;
+  render(): string;
+  syncWith(laptop: Laptop): string;
 }
 
-interface Table {
-  putOn(): string;
-  checkCompatibility(chair: Chair): string;
-}
-//#endregion
-
-//#region Modern Furniture Factory and its products
-class ModernFurnitureFactory implements FurnitureFactory {
-  public createChair(): Chair {
-    return new ModernChair();
-  }
-
-  public createTable(): Table {
-    return new ModernTable();
-  }
-}
-
-class ModernChair implements Chair {
-  public sitOn(): string {
-    return "Sitting on a modern chair.";
-  }
-}
-
-class ModernTable implements Table {
-  public putOn(): string {
-    return "Putting items on a modern table.";
-  }
-
-  public checkCompatibility(chair: Chair): string {
-    const result = chair.sitOn();
-    return `Modern table works well with -> (${result})`;
-  }
+interface Headphones {
+  brand: string;
+  render(): string;
+  pairWith(smartphone: Smartphone): string;
 }
 //#endregion
 
-//#region Classic Furniture Factory and its products
-class ClassicFurnitureFactory implements FurnitureFactory {
-  public createChair(): Chair {
-    return new ClassicChair();
-  }
+//#region Abstract Factory
+interface TechFactory {
+  createLaptop(): Laptop;
+  createSmartphone(): Smartphone;
+  createHeadphones(): Headphones;
+}
+//#endregion
 
-  public createTable(): Table {
-    return new ClassicTable();
+//#region Apple Brand Factory and its products
+class AppleFactory implements TechFactory {
+  public createLaptop = () => new MacBook();
+  public createSmartphone = () => new IPhone();
+  public createHeadphones = () => new AirPods();
+}
+
+class MacBook implements Laptop {
+  brand = "Apple";
+  render = () => "MacBook Pro (M3 Chip)";
+}
+
+class IPhone implements Smartphone {
+  brand = "Apple";
+  render = () => "iPhone 15 Pro";
+  syncWith(laptop: Laptop): string {
+    // Проверка совместимости
+    if (laptop.brand !== this.brand) {
+      return `[Incompatible] Cannot sync ${this.render()} with ${laptop.render()}. Ecosystem mismatch!`;
+    }
+    return `[AirDrop] Syncing with ${laptop.render()}`;
   }
 }
 
-class ClassicChair implements Chair {
-  public sitOn(): string {
-    return "Sitting on a classic wooden chair.";
-  }
-}
-
-class ClassicTable implements Table {
-  public putOn(): string {
-    return "Putting items on a classic table.";
-  }
-
-  public checkCompatibility(chair: Chair): string {
-    const result = chair.sitOn();
-    return `Classic table works well with -> (${result})`;
+class AirPods implements Headphones {
+  brand = "Apple";
+  render = () => "AirPods Pro 2";
+  pairWith(smartphone: Smartphone): string {
+    if (smartphone.brand !== this.brand) {
+      return `[Incompatible] ${this.render()} cannot pair with ${smartphone.render()}. Only Apple devices supported.`;
+    }
+    return `[H1 Chip] Instant pairing with ${smartphone.render()}. Battery 100%.`;
   }
 }
 //#endregion
 
-//#region Client code
-function clientCode(factory: FurnitureFactory) {
-  const chair = factory.createChair();
-  const table = factory.createTable();
+//#region Sony Brand Factory and its products
+class SonyFactory implements TechFactory {
+  public createLaptop = () => new VaioLaptop();
+  public createSmartphone = () => new XperiaPhone();
+  public createHeadphones = () => new SonyWH1000();
+}
 
-  console.log(table.putOn());
-  console.log(table.checkCompatibility(chair));
+class VaioLaptop implements Laptop {
+  brand = "Sony";
+  render = () => "Sony VAIO Z";
+}
+
+class XperiaPhone implements Smartphone {
+  brand = "Sony";
+  render = () => "Sony Xperia 1 V";
+  syncWith(laptop: Laptop): string {
+    if (laptop.brand !== this.brand) {
+      return `[Incompatible] ${this.render()} cannot link to ${laptop.render()}. Requires Sony hardware.`;
+    }
+    return `[Cross-Device] Linking to ${laptop.render()}`;
+  }
+}
+
+class SonyWH1000 implements Headphones {
+  brand = "Sony";
+  render = () => "Sony WH-1000XM5";
+  pairWith(smartphone: Smartphone): string {
+    if (smartphone.brand !== this.brand) {
+      return `[Incompatible] ${this.render()} limited features with ${smartphone.render()}. No LDAC support.`;
+    }
+    return `[LDAC] High-res audio pairing with ${smartphone.render()}. Noise cancelling active.`;
+  }
+}
+//#endregion
+
+//#region Client Code
+function clientCode(factory: TechFactory) {
+  const laptop = factory.createLaptop();
+  const phone = factory.createSmartphone();
+  const audio = factory.createHeadphones();
+
+  console.log(`UI: ${laptop.render()}`);
+  console.log(`UI: ${phone.render()}`);
+  console.log(`UI: ${audio.render()}`);
+
+  console.log(`Sync: ${phone.syncWith(laptop)}`);
+  console.log(`Pair: ${audio.pairWith(phone)}`);
 }
 //#endregion
 
 //#region Execution
-console.log("Client: Using modern furniture factory...");
-clientCode(new ModernFurnitureFactory());
+console.log("--- Brand: APPLE ---");
+clientCode(new AppleFactory());
 
-console.log("");
+console.log("\n--- Brand: SONY ---");
+clientCode(new SonyFactory());
 
-console.log("Client: Using classic furniture factory...");
-clientCode(new ClassicFurnitureFactory());
+console.log("\n--- Manual Check: Incompatibility ---");
+const applePhone = new IPhone();
+const sonyLaptop = new VaioLaptop();
+const sonyAudio = new SonyWH1000();
+
+console.log(applePhone.syncWith(sonyLaptop));
+console.log(sonyAudio.pairWith(applePhone));
 //#endregion

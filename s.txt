@@ -1,61 +1,128 @@
-//#region Flyweight
-class IconFlyweight {
-  private brandData: { name: string; logoUrl: string; color: string };
+//#region Abstract Products
+interface Laptop {
+  brand: string;
+  render(): string;
+}
 
-  constructor(brandData: any) {
-    this.brandData = brandData;
+interface Smartphone {
+  brand: string;
+  render(): string;
+  syncWith(laptop: Laptop): string;
+}
+
+interface Headphones {
+  brand: string;
+  render(): string;
+  pairWith(smartphone: Smartphone): string;
+}
+//#endregion
+
+//#region Abstract Factory
+interface TechFactory {
+  createLaptop(): Laptop;
+  createSmartphone(): Smartphone;
+  createHeadphones(): Headphones;
+}
+//#endregion
+
+//#region Apple Brand Factory and its products
+class AppleFactory implements TechFactory {
+  public createLaptop = () => new MacBook();
+  public createSmartphone = () => new IPhone();
+  public createHeadphones = () => new AirPods();
+}
+
+class MacBook implements Laptop {
+  brand = "Apple";
+  render = () => "MacBook Pro (M3 Chip)";
+}
+
+class IPhone implements Smartphone {
+  brand = "Apple";
+  render = () => "iPhone 15 Pro";
+  syncWith(laptop: Laptop): string {
+    // Проверка совместимости
+    if (laptop.brand !== this.brand) {
+      return `[Incompatible] Cannot sync ${this.render()} with ${laptop.render()}. Ecosystem mismatch!`;
+    }
+    return `[AirDrop] Syncing with ${laptop.render()}`;
   }
+}
 
-  public renderOnMap(uniqueState: {
-    lat: number;
-    lng: number;
-    shopId: string;
-  }): void {
-    console.log(`Map: Rendering shop ${uniqueState.shopId} at [${uniqueState.lat}, ${uniqueState.lng}] 
-                     using icon: ${this.brandData.logoUrl} (${this.brandData.name})`);
+class AirPods implements Headphones {
+  brand = "Apple";
+  render = () => "AirPods Pro 2";
+  pairWith(smartphone: Smartphone): string {
+    if (smartphone.brand !== this.brand) {
+      return `[Incompatible] ${this.render()} cannot pair with ${smartphone.render()}. Only Apple devices supported.`;
+    }
+    return `[H1 Chip] Instant pairing with ${smartphone.render()}. Battery 100%.`;
   }
 }
 //#endregion
 
-//#region Icon Factory
-class IconFactory {
-  private flyweights: { [key: string]: IconFlyweight } = {};
+//#region Sony Brand Factory and its products
+class SonyFactory implements TechFactory {
+  public createLaptop = () => new VaioLaptop();
+  public createSmartphone = () => new XperiaPhone();
+  public createHeadphones = () => new SonyWH1000();
+}
 
-  private getKey(brand: string, color: string): string {
-    return `${brand}_${color}`.toLowerCase();
-  }
+class VaioLaptop implements Laptop {
+  brand = "Sony";
+  render = () => "Sony VAIO Z";
+}
 
-  public getIcon(brand: string, logoUrl: string, color: string): IconFlyweight {
-    const key = this.getKey(brand, color);
-
-    if (!(key in this.flyweights)) {
-      console.log(`Factory: Creating NEW icon for brand: ${brand}`);
-      this.flyweights[key] = new IconFlyweight({ brand, logoUrl, color });
-    } else {
-      console.log(`Factory: Reusing EXISTING icon for brand: ${brand}`);
+class XperiaPhone implements Smartphone {
+  brand = "Sony";
+  render = () => "Sony Xperia 1 V";
+  syncWith(laptop: Laptop): string {
+    if (laptop.brand !== this.brand) {
+      return `[Incompatible] ${this.render()} cannot link to ${laptop.render()}. Requires Sony hardware.`;
     }
-    return this.flyweights[key];
+    return `[Cross-Device] Linking to ${laptop.render()}`;
+  }
+}
+
+class SonyWH1000 implements Headphones {
+  brand = "Sony";
+  render = () => "Sony WH-1000XM5";
+  pairWith(smartphone: Smartphone): string {
+    if (smartphone.brand !== this.brand) {
+      return `[Incompatible] ${this.render()} limited features with ${smartphone.render()}. No LDAC support.`;
+    }
+    return `[LDAC] High-res audio pairing with ${smartphone.render()}. Noise cancelling active.`;
   }
 }
 //#endregion
 
 //#region Client Code
-const shopsData = [
-  { id: "s1", brand: "Starbucks", lat: 55.75, lng: 37.61 },
-  { id: "s2", brand: "Starbucks", lat: 55.76, lng: 37.62 },
-  { id: "s3", brand: "Starbucks", lat: 55.77, lng: 37.63 },
-  { id: "m1", brand: "McDonalds", lat: 40.71, lng: -74.0 },
-];
+function clientCode(factory: TechFactory) {
+  const laptop = factory.createLaptop();
+  const phone = factory.createSmartphone();
+  const audio = factory.createHeadphones();
 
-const factory = new IconFactory();
+  console.log(`UI: ${laptop.render()}`);
+  console.log(`UI: ${phone.render()}`);
+  console.log(`UI: ${audio.render()}`);
 
-shopsData.forEach((data) => {
-  const icon = factory.getIcon(
-    data.brand,
-    `${data.brand.toLowerCase()}.png`,
-    "green",
-  );
+  console.log(`Sync: ${phone.syncWith(laptop)}`);
+  console.log(`Pair: ${audio.pairWith(phone)}`);
+}
+//#endregion
 
-  icon.renderOnMap({ lat: data.lat, lng: data.lng, shopId: data.id });
-});
+//#region Execution
+console.log("--- Brand: APPLE ---");
+clientCode(new AppleFactory());
+
+console.log("\n--- Brand: SONY ---");
+clientCode(new SonyFactory());
+
+console.log("\n--- Manual Check: Incompatibility ---");
+const applePhone = new IPhone();
+const sonyLaptop = new VaioLaptop();
+const sonyAudio = new SonyWH1000();
+
+console.log(applePhone.syncWith(sonyLaptop));
+console.log(sonyAudio.pairWith(applePhone));
 //#endregion
