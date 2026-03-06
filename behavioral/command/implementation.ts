@@ -1,4 +1,4 @@
-//#region Interface
+//#region Command Interface
 interface Command {
   execute(): void;
   undo(): void;
@@ -28,7 +28,7 @@ class CartService {
 }
 //#endregion
 
-//#region Команда добавления
+//#region Concrete Command
 class AddToCartCommand implements Command {
   constructor(
     private receiver: CartService,
@@ -45,7 +45,7 @@ class AddToCartCommand implements Command {
 }
 //#endregion
 
-//#region История действий
+//#region Invoker
 class CommandHistory {
   private history: Command[] = [];
 
