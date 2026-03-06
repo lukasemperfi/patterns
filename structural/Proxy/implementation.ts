@@ -1,11 +1,11 @@
 //#region Subject Interface
-interface IProductDetail {
+interface ProductDetail {
   getDetails(): string;
 }
 //#endregion
 
 //#region Real Subject
-class RealProductDetail implements IProductDetail {
+class RealProductDetail implements ProductDetail {
   private productId: string;
 
   constructor(productId: string) {
@@ -25,7 +25,7 @@ class RealProductDetail implements IProductDetail {
 //#endregion
 
 //#region Proxy
-class ProductDetailProxy implements IProductDetail {
+class ProductDetailProxy implements ProductDetail {
   private realProductDetail: RealProductDetail | null = null;
   private productId: string;
 
