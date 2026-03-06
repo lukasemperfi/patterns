@@ -1,10 +1,9 @@
-```mermaid
 classDiagram
-    %% Иерархия продуктов
-    class Product {
-        <<interface>>
-        +render() string
-    }
+%% Иерархия продуктов
+class Product {
+<<interface>>
++render() string
+}
 
     class LaptopProduct {
         +render() string
@@ -47,4 +46,3 @@ classDiagram
 
     %% Зависимости
     ProductFactory ..> Product : depends on
-```
