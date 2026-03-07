@@ -1,13 +1,13 @@
 //#region Abstract Class
 abstract class BaseDataLoader {
   public async loadData(): Promise<void> {
-    this.showLoader(); // Базовая операция
-    await this.fetchData(); // Абстрактная (обязательная)
-    this.parseResponse(); // Базовая операция
-    this.onBeforeRender(); // Хук (необязательный)
-    this.render(); // Абстрактная (обязательная)
-    this.hideLoader(); // Базовая операция
-    this.onComplete(); // Хук (необязательный)
+    this.showLoader();
+    await this.fetchData();
+    this.parseResponse();
+    this.onBeforeRender();
+    this.render();
+    this.hideLoader();
+    this.onComplete();
   }
 
   // Базовые операции
@@ -23,11 +23,9 @@ abstract class BaseDataLoader {
     console.log("Abstract: Hiding spinner.");
   }
 
-  // Абстрактные(Обязательные) операции
   protected abstract fetchData(): Promise<void>;
   protected abstract render(): void;
 
-  // Хуки(Необязательные)
   protected onBeforeRender(): void {}
   protected onComplete(): void {}
 }
