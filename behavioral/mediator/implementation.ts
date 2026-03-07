@@ -1,37 +1,8 @@
-//#region Abstract
+//#region Mediator Interface
 interface Mediator {
   notify(sender: object, event: string, data?: any): void;
 }
 
-abstract class DashboardModule {
-  constructor(protected mediator: Mediator) {}
-}
-
-//#endregion
-
-//#region Modules
-class DateFilter extends DashboardModule {
-  public selectRange(range: string) {
-    console.log(`Фильтр: Выбран период ${range}`);
-    this.mediator.notify(this, "dateRangeChanged", range);
-  }
-}
-
-class ChartView extends DashboardModule {
-  public refresh(range: string) {
-    console.log(`График: Загрузка данных для ${range}... Рисую кривые.`);
-  }
-
-  public clear() {
-    console.log("График: Очистка данных.");
-  }
-}
-
-class ExportService extends DashboardModule {
-  public toggle(isEnabled: boolean) {
-    console.log(`Экспорт: Кнопка ${isEnabled ? "активна" : "заблокирована"}`);
-  }
-}
 //#endregion
 
 //#region Mediator
@@ -40,7 +11,6 @@ class DashboardManager implements Mediator {
   private chart!: ChartView;
   private exporter!: ExportService;
 
-  // Связываем компоненты через медиатора
   public setComponents(
     dateFilter: DateFilter,
     chart: ChartView,
@@ -66,6 +36,37 @@ class DashboardManager implements Mediator {
         this.exporter.toggle(false);
         break;
     }
+  }
+}
+//#endregion
+
+//#region Module Interface
+abstract class DashboardModule {
+  constructor(protected mediator: Mediator) {}
+}
+//#endregion
+
+//#region Modules
+class DateFilter extends DashboardModule {
+  public selectRange(range: string) {
+    console.log(`Фильтр: Выбран период ${range}`);
+    this.mediator.notify(this, "dateRangeChanged", range);
+  }
+}
+
+class ChartView extends DashboardModule {
+  public refresh(range: string) {
+    console.log(`График: Загрузка данных для ${range}... Рисую кривые.`);
+  }
+
+  public clear() {
+    console.log("График: Очистка данных.");
+  }
+}
+
+class ExportService extends DashboardModule {
+  public toggle(isEnabled: boolean) {
+    console.log(`Экспорт: Кнопка ${isEnabled ? "активна" : "заблокирована"}`);
   }
 }
 //#endregion

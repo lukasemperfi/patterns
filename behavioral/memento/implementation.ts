@@ -1,4 +1,4 @@
-//#region Abstract
+//#region Memento Interface
 interface Memento {
   getState(): string; // Хранит билд (силу, ловкость и т.д.)
   getName(): string; // Название пресета
