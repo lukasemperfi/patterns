@@ -1,3 +1,28 @@
+//#region Context
+class CheckoutButton {
+  private state!: ButtonState;
+
+  constructor(state: ButtonState) {
+    this.transitionTo(state);
+  }
+
+  public transitionTo(state: ButtonState): void {
+    console.log(`Context: Switching to ${(<any>state).constructor.name}.`);
+    this.state = state;
+    this.state.setContext(this);
+    this.render();
+  }
+
+  public click(): void {
+    this.state.handleClick();
+  }
+
+  public render(): void {
+    this.state.handleRender();
+  }
+}
+//#endregion
+
 //#region Abstract State
 abstract class ButtonState {
   protected context!: CheckoutButton;
@@ -44,31 +69,6 @@ class SuccessState extends ButtonState {
 
   public handleRender(): void {
     console.log("UI: Rendering Green Button with Checkmark 'Done!'");
-  }
-}
-//#endregion
-
-//#region Context
-class CheckoutButton {
-  private state!: ButtonState;
-
-  constructor(state: ButtonState) {
-    this.transitionTo(state);
-  }
-
-  public transitionTo(state: ButtonState): void {
-    console.log(`Context: Switching to ${(<any>state).constructor.name}.`);
-    this.state = state;
-    this.state.setContext(this);
-    this.render();
-  }
-
-  public click(): void {
-    this.state.handleClick();
-  }
-
-  public render(): void {
-    this.state.handleRender();
   }
 }
 //#endregion

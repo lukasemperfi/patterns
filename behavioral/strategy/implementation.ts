@@ -1,3 +1,30 @@
+//#region Context
+class InputField {
+  private strategy: ValidationStrategy;
+
+  constructor(strategy: ValidationStrategy) {
+    this.strategy = strategy;
+  }
+
+  public setStrategy(strategy: ValidationStrategy): void {
+    this.strategy = strategy;
+  }
+
+  public handleInput(text: string): void {
+    console.log(`\nInputField: User typed "${text}"`);
+
+    const isValid = this.strategy.validate(text);
+
+    if (!isValid) {
+      console.log(`UI Error: ${this.strategy.errorMessage}`);
+      console.log("UI: Rendering red border.");
+    } else {
+      console.log("UI: Data is valid! Rendering green border.");
+    }
+  }
+}
+//#endregion
+
 //#region Strategy Interface
 interface ValidationStrategy {
   validate(value: string): boolean;
@@ -24,36 +51,6 @@ class PhoneValidation implements ValidationStrategy {
     const isValid = value.startsWith("+") && value.length >= 10;
     console.log(`[Strategy] Checking phone: ${isValid}`);
     return isValid;
-  }
-}
-//#endregion
-
-//#region Context
-class InputField {
-  private strategy: ValidationStrategy;
-
-  constructor(strategy: ValidationStrategy) {
-    this.strategy = strategy;
-  }
-
-  /**
-   * Позволяет менять правило валидации "на лету"
-   */
-  public setStrategy(strategy: ValidationStrategy): void {
-    this.strategy = strategy;
-  }
-
-  public handleInput(text: string): void {
-    console.log(`\nInputField: User typed "${text}"`);
-
-    const isValid = this.strategy.validate(text);
-
-    if (!isValid) {
-      console.log(`UI Error: ${this.strategy.errorMessage}`);
-      console.log("UI: Rendering red border.");
-    } else {
-      console.log("UI: Data is valid! Rendering green border.");
-    }
   }
 }
 //#endregion
