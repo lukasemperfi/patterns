@@ -1,10 +1,10 @@
-//#region Component Interface
+//#region Element Interface
 interface Person {
   accept(visitor: Inspector): void;
 }
 //#endregion
 
-//#region Concrete Visitors
+//#region Concrete Elements
 class Passenger implements Person {
   public accept(visitor: Inspector): void {
     visitor.visitPassenger(this);
@@ -85,9 +85,9 @@ class HealthOfficer implements Inspector {
 //#region Client Code
 const queue: Person[] = [new Passenger(), new Pilot(), new Military()];
 
-console.log("--- Customs Check Starts ---");
-const customs = new CustomsOfficer();
-queue.forEach((person) => person.accept(customs));
+// console.log("--- Customs Check Starts ---");
+// const customs = new CustomsOfficer();
+// queue.forEach((person) => person.accept(customs));
 
 console.log("\n--- Health Check Starts ---");
 const health = new HealthOfficer();

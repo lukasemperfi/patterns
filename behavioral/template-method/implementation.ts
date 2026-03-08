@@ -10,7 +10,6 @@ abstract class BaseDataLoader {
     this.onComplete();
   }
 
-  // Базовые операции
   protected showLoader(): void {
     console.log("Abstract: Showing global spinner...");
   }
