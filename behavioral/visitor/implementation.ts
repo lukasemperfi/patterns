@@ -85,9 +85,9 @@ class HealthOfficer implements Inspector {
 //#region Client Code
 const queue: Person[] = [new Passenger(), new Pilot(), new Military()];
 
-// console.log("--- Customs Check Starts ---");
-// const customs = new CustomsOfficer();
-// queue.forEach((person) => person.accept(customs));
+console.log("--- Customs Check Starts ---");
+const customs = new CustomsOfficer();
+queue.forEach((person) => person.accept(customs));
 
 console.log("\n--- Health Check Starts ---");
 const health = new HealthOfficer();
